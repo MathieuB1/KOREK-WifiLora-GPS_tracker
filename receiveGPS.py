@@ -1,0 +1,73 @@
+import machine, json
+from common import *
+from GPStracker import GPStracker
+from GPStracker import GPSsend
+from Display import oled
+from LightLora import loratool
+
+def receiveGPS():
+
+  started = False
+  product_id = False
+  create_title = KOREK['title']
+
+  display = oled.startDisplay(SCL,SDA,RST_SCREEN)
+  oled.resetScreen(display)
+  display.show()
+
+  wifi_counter = 0
+  lora_counter = 0
+
+  aes_key = KOREK['title']
+
+  while True:
+    lora_signal = -999
+    gps = {"lat": 0, "lon": 0, "precision": 100}
+
+    response = loratool.syncRead(aes_key)
+
+    if response:
+      lora_signal = response['signal_strengh']
+      display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+      display.show()
+
+      if response['message'] == "ok" or response['message'] == "ack":
+        # Save battery
+        #machine.deepsleep(DEEPSLEEP)
+      else:
+        lora_counter += 1  
+        gps = json.loads(response['message'].replace("'","\""))
+        KOREK['title'] = gps['title']
+
+    if gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
+
+      oled.resetScreen(display)
+      display.text("tracking " + KOREK["title"], 0, 0)
+      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      display.text("wifi sent: " + str(wifi_counter), 0, 20)
+      display.text("lora read:" + str(lora_counter), 0, 30)
+      display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+      display.show()
+
+      if not GPSsend.connect_wifi(ESSID, PASS):
+      #if not GPSsend.connect_wifi(ESSID, PASS):
+        display.text("wifi not found!", 0, 50)
+        display.show()
+      else:  
+        display.show()
+        if not started:
+          product_id, create_title = GPSsend.create_product(gps['date'], KOREK)
+          started = True
+
+        sent = GPSsend.update_position(create_title, product_id, gps['lon'],gps['lat'], KOREK)
+        if sent:
+          wifi_counter += 1
+
+    else:
+      oled.resetScreen(display)
+      display.text("no gps precision", 0, 0)
+      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      display.text("wifi sent: " + str(wifi_counter), 0, 20)
+      display.text("lora read:" + str(lora_counter), 0, 30)
+      display.show()
+
