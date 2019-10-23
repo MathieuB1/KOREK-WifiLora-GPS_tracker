@@ -58,7 +58,7 @@ class LoraUtil:
 			pkt.rssi = sx12.packetRssi()
 			pkt.snr = sx12.packetSnr()
 			try:
-				pkt.msgTxt = pay[4:].decode('utf-8', 'ignore')
+				pkt.msgTxt = pay[4:]
 			except Exception as ex:
 				print("doReceiver error: ")
 				print(ex)

@@ -7,7 +7,7 @@ def syncSend(txt, aes_key):
   try:
     crypted = crypt.cryptdata(txt, aes_key)
     print('sending lora packet')
-    lr.sendPacket(0xff, 0x41, crypted.encode())
+    lr.sendPacket(0xff, 0x41, crypted)
     sendTime = 0
     while not lr.isPacketSent() :
       time.sleep(.1)
@@ -30,10 +30,9 @@ def syncRead(aes_key):
       return False
   try:
     packet = lr.readPacket()
-    print(str(packet.msgTxt))
     if packet and packet.msgTxt:
       if syncSend("ok", aes_key):
-        return { "message": crypt.decryptdata(packet.msgTxt, aes_key), "signal_strengh": packet.rssi}
+        return { "message": crypt.decryptdata(packet.msgTxt, aes_key).decode("utf-8").strip(), "signal_strengh": packet.rssi}
       else:
         return False
   except Exception as e:

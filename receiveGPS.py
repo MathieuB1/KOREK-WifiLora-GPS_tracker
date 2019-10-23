@@ -20,24 +20,30 @@ def receiveGPS():
 
   aes_key = KOREK['title']
 
+  lora_signal = -999
+  
   while True:
-    lora_signal = -999
     gps = {"lat": 0, "lon": 0, "precision": 100}
 
-    response = loratool.syncRead(aes_key)
+    try:
+      response = loratool.syncRead(aes_key)
+      if response:
+        lora_signal = response['signal_strengh']
+        display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+        display.show()
 
-    if response:
-      lora_signal = response['signal_strengh']
-      display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
-      display.show()
-
-      if response['message'] == "ok" or response['message'] == "ack":
-        # Save battery
-        #machine.deepsleep(DEEPSLEEP)
-      else:
-        lora_counter += 1  
-        gps = json.loads(response['message'].replace("'","\""))
-        KOREK['title'] = gps['title']
+        if response['message'] == "ok" or response['message'] == "ack":
+          # Save battery
+          print('lora received')
+          #machine.deepsleep(DEEPSLEEP)
+        else:
+          lora_counter += 1 
+          gps = json.loads(response['message'].replace("'","\""))
+          KOREK['title'] = gps['title']
+    except Exception as e:
+      print(str(e))
+      print('Nope this is not our Lora packet!')
+      continue
 
     if gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
 
@@ -50,7 +56,6 @@ def receiveGPS():
       display.show()
 
       if not GPSsend.connect_wifi(ESSID, PASS):
-      #if not GPSsend.connect_wifi(ESSID, PASS):
         display.text("wifi not found!", 0, 50)
         display.show()
       else:  
@@ -58,7 +63,6 @@ def receiveGPS():
         if not started:
           product_id, create_title = GPSsend.create_product(gps['date'], KOREK)
           started = True
-
         sent = GPSsend.update_position(create_title, product_id, gps['lon'],gps['lat'], KOREK)
         if sent:
           wifi_counter += 1
@@ -69,5 +73,6 @@ def receiveGPS():
       display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
+      display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
       display.show()
 

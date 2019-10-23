@@ -66,19 +66,14 @@ def startGPS():
           #machine.deepsleep(DEEPSLEEP)
 
     else:
-      send_signal_to_lora = False
-      if not GPSsend.connect_wifi(ESSID, PASS):
-        # Keep-alive
-        print('sending acknowlegment')
-        loratool.syncSend('ack', aes_key)
-        send_signal_to_lora = True
-        lora_counter += 1
+
+      # Keep-alive
+      print('sending acknowlegment')
+      loratool.syncSend('ack', aes_key)
        
       oled.resetScreen(display)
       display.text("no gps precision", 0, 0)
       display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora sent:" + str(lora_counter), 0, 30)
-      if send_signal_to_lora:
-        display.text("keep-alive: on", 0, 60)
       display.show()
