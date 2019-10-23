@@ -50,7 +50,7 @@ def startGPS():
               #machine.deepsleep(DEEPSLEEP)
         else:
           display.text("lora not sent!", 0, 50)
-          display.show()
+        display.show()
 
       else:
         display.text("using wifi!", 0, 40)
