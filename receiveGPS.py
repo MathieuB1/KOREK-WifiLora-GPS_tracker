@@ -45,7 +45,7 @@ def receiveGPS():
       print('Nope this is not our Lora packet!')
       continue
 
-    if gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
+    if type(gps) is dict and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
 
       oled.resetScreen(display)
       display.text("tracking " + KOREK["title"], 0, 0)

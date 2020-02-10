@@ -3,6 +3,9 @@ from common import *
 from GPStracker import GPSsend, GPStracker
 from Display import oled
 from LightLora import loratool
+from time import sleep
+
+machine.freq(80000000)
 
 def startGPS():
 
@@ -29,7 +32,7 @@ def startGPS():
     gps = GPStracker.decode_gps(gps_module)
     #gps = {"lat":7.101813, "lon":43.58843, "date": "300919", "precision":3.0}
     
-    if gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
+    if type(gps) is dict and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
 
       oled.resetScreen(display)
       display.text("tracking " + KOREK["title"], 0, 0)
@@ -77,3 +80,6 @@ def startGPS():
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora sent:" + str(lora_counter), 0, 30)
       display.show()
+    
+    # wait before calling gps again
+    sleep(3)
