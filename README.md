@@ -4,9 +4,9 @@ Live GPS-tracker for KOREK
 
 #### Hardware:
 
-> Heltec V2 ESP32 Board with Wifi & Lora
-> Pin 17 is used for capturing GPS data
-> consumption 0.713mW/h
+- Heltec V2 ESP32 Board with Wifi & Lora
+- Pin 17 is used for capturing GPS data
+- Consumption 0.713mW/h
 
 #### Feature:
 
@@ -30,7 +30,7 @@ sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-20190
 ##### Copy files into Board
 ```
 sudo rshell -p /dev/ttyUSB0
-git clone 
+# Clone this repo & modify the common.py to add your KOREK credentials & Wifi aacount
 cd KOREK-WifiLora-GPS_tracker/ && cp -r * /pyboard/
 ```
 

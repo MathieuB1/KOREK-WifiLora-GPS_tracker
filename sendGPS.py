@@ -69,7 +69,6 @@ def startGPS():
           #machine.deepsleep(DEEPSLEEP)
 
     else:
-
       # Keep-alive
       print('sending acknowlegment')
       loratool.syncSend('ack', aes_key)

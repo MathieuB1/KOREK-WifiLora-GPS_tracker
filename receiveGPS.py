@@ -35,7 +35,6 @@ def receiveGPS():
         if response['message'] == "ok" or response['message'] == "ack":
           # Save battery
           print('lora received')
-          #machine.deepsleep(DEEPSLEEP)
         else:
           lora_counter += 1 
           gps = json.loads(response['message'].replace("'","\""))
