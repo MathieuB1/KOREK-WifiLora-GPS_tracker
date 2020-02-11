@@ -28,6 +28,9 @@ def startGPS():
 
   aes_key = KOREK['title']
 
+  wifi_activate = True
+  GPSsend.connect_wifi(ESSID, PASS)
+ 
   while True:
     gps = GPStracker.decode_gps(gps_module)
     #gps = {"lat":7.101813, "lon":43.58843, "date": "300919", "precision":3.0}
@@ -41,7 +44,7 @@ def startGPS():
       display.text("lora sent:" + str(lora_counter), 0, 30)
       display.show()
 
-      if not GPSsend.connect_wifi(ESSID, PASS):
+      if not wifi_activate:
 
         display.text("using lora!", 0, 40)
         gps['title'] = KOREK['title']
@@ -50,7 +53,10 @@ def startGPS():
           if response:
             if response['message'] == 'ok':
               lora_counter += 1
-              #machine.deepsleep(DEEPSLEEP)
+              if lora_counter % WIFI_REACTIVATE == 0:
+                GPSsend.connect_wifi(ESSID, PASS)
+                wifi_activate = True
+                #machine.deepsleep(DEEPSLEEP)
         else:
           display.text("lora not sent!", 0, 50)
         display.show()
@@ -66,7 +72,11 @@ def startGPS():
         sent = GPSsend.update_position(create_title, product_id, gps['lon'],gps['lat'], KOREK)
         if sent:
           wifi_counter += 1
-          #machine.deepsleep(DEEPSLEEP)
+
+        if wifi_counter > 1:
+          wifi_activate = False
+          GPSsend.disconnect()
+        #machine.deepsleep(DEEPSLEEP)
 
     else:
       # Keep-alive
