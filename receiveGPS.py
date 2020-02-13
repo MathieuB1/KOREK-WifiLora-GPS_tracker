@@ -17,6 +17,7 @@ def receiveGPS():
 
   wifi_counter = 0
   lora_counter = 0
+  failure_counter = 0
 
   aes_key = KOREK['title']
 
@@ -65,7 +66,11 @@ def receiveGPS():
         sent = GPSsend.update_position(create_title, product_id, gps['lon'],gps['lat'], KOREK)
         if sent:
           wifi_counter += 1
-
+        else:
+          failure_counter += 1
+          if failure_counter > 3:
+            started = False
+            failure_counter = 0
     else:
       oled.resetScreen(display)
       display.text("no gps precision", 0, 0)

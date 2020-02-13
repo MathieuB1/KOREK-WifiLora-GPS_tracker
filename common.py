@@ -8,10 +8,11 @@ RST_SCREEN=16
 # Pin where my GPS is connected
 RX=17
 PRECISION=5
+WAIT_FOR_GPS=3
 
 # Box settings
 ESSID="Livebox-0AD4"
-PASS="7374C542512D9137949155E7E6"
+PASS=""
 
 # Korek settings
 KOREK = { "korek_host": "https://korek.ml",
@@ -21,4 +22,4 @@ KOREK = { "korek_host": "https://korek.ml",
             }
 
 # Prefer Lora than Wifi
-WIFI_REACTIVATE = 20
+WIFI_REACTIVATE = 30

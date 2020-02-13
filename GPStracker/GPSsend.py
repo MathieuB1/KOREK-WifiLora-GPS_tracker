@@ -33,8 +33,9 @@ def existing_product(create_title, korek):
     headers = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + str(get_token(korek))}
     response = urequests.request("GET", url, headers=headers)
     if response.status_code == 200:
-      if response.json()['count'] > 0:
-        product_id = response.json()['results'][0]['id']
+      res = response.json()
+      if res['count'] > 0:
+        product_id = res['results'][0]['id']
         response.close()
         return product_id
       else:

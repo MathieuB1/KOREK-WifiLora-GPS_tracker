@@ -25,6 +25,7 @@ def startGPS():
 
   wifi_counter = 0
   lora_counter = 0
+  failure_counter = 0
 
   aes_key = KOREK['title']
 
@@ -72,8 +73,13 @@ def startGPS():
         sent = GPSsend.update_position(create_title, product_id, gps['lon'],gps['lat'], KOREK)
         if sent:
           wifi_counter += 1
+        else:
+          failure_counter += 1
+          if failure_counter > 3:
+            started = True
+            failure_counter = 0
 
-        if wifi_counter > 1:
+        if wifi_counter > 0:
           wifi_activate = False
           GPSsend.disconnect()
         #machine.deepsleep(DEEPSLEEP)
@@ -91,4 +97,4 @@ def startGPS():
       display.show()
     
     # wait before calling gps again
-    sleep(3)
+    sleep(WAIT_FOR_GPS)
