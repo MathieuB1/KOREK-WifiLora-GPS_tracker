@@ -31,7 +31,8 @@ sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-20190
 ##### Copy files into Board
 ```
 sudo rshell -p /dev/ttyUSB0
-# Clone this repo & modify the common.py to add your KOREK credentials & Wifi aacount
+# Clone this repo & modify the common.py to add your KOREK credentials & Wifi account
+# Comment/Uncomment your chip mode in main.py (Default is the Lora sender)
 cd KOREK-WifiLora-GPS_tracker/ && cp -r * /pyboard/
 ```
 
