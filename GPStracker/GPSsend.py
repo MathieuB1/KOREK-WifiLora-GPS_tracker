@@ -20,6 +20,7 @@ def connect_wifi(essid, password):
     return 'wifi successfuly connected!'
   except:
       print('Cannot connect to wifi!')
+      return False
 
 def disconnect():
     station = network.WLAN(network.STA_IF)

@@ -18,6 +18,8 @@ def receiveGPS():
   wifi_counter = 0
   lora_counter = 0
   failure_counter = 0
+  
+  tracking_date = ""
 
   aes_key = KOREK['title']
 
@@ -54,6 +56,10 @@ def receiveGPS():
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
       display.show()
+
+      if tracking_date != gps['date']:
+        tracking_date = gps['date']
+        started = False
 
       if not GPSsend.connect_wifi(ESSID, PASS):
         display.text("wifi not found!", 0, 50)
