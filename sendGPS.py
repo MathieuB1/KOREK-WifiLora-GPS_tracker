@@ -5,9 +5,11 @@ from Display import oled
 from LightLora import loratool
 from time import sleep
 
-machine.freq(40000000)
+
 
 def startGPS():
+
+  machine.freq(40000000)
 
   started = False
   product_id = False

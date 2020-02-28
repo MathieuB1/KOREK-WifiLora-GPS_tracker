@@ -1,0 +1,17 @@
+from common import *
+
+def setCommon(isSender, dict_res):
+  file = open("common_tmp.py", "r")
+  default_conf = file.read()
+  file.close()
+
+  file = open("common.py","w")
+  file.write(default_conf)
+  tuple_korek = (dict_res.get("korek_username",""),dict_res.get("korek_password",""),dict_res.get("title",""),) if isSender else (dict_res["korek_username"],dict_res["korek_password"],dict_res["title"],)
+  file.write('KOREK={"korek_host":"https://korek.ml", "korek_username":"%s", "korek_password":"%s", "title":"%s" }\n' % tuple_korek )
+  tuple_wifi = (dict_res.get("essid",""),dict_res.get("wifi_pass",""),) if isSender else (dict_res["essid"],dict_res["wifi_pass"],)
+  file.write('WIFI={"essid":"%s", "pass":"%s"}\n' % tuple_wifi )
+  file.close()
+  
+  return True
+

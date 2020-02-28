@@ -7,6 +7,8 @@ from LightLora import loratool
 
 def receiveGPS():
 
+  #machine.freq(160000000)
+
   started = False
   product_id = False
   create_title = KOREK['title']
@@ -61,7 +63,7 @@ def receiveGPS():
         tracking_date = gps['date']
         started = False
 
-      if not GPSsend.connect_wifi(ESSID, PASS):
+      if not GPSsend.connect_wifi(WIFI['essid'], WIFI['pass']):
         display.text("wifi not found!", 0, 50)
         display.show()
       else:  

@@ -1,35 +1,14 @@
 import machine
 import GPStracker
 import GPSsend
-import oled
-
+from Display import oled
+from common import *
 
 def startGPS():
-
-  # Display Pins
-  SCL=15
-  SDA=4
-  RST_SCREEN=16
-
-  # Pin where my GPS is connected
-  RX=17
-  PRECISION=4.5
-
-  # Box settings
-  ESSID="Livebox-0AD4"
-  PASS="7374C542512D9137949155E7E6"
-
-  # Korek settings
-  KOREK = { "korek_host": "https://korek.ml", 
-            "korek_username":"toto", 
-            "korek_password":"toto",
-            "title": "poppiz",
-            }
   
   started = False
   product_id = False
   create_title = ""
-
 
   display = oled.startDisplay(SCL,SDA,RST_SCREEN)
   oled.resetScreen(display)
@@ -55,7 +34,7 @@ def startGPS():
       display.text("sent: " + str(counter), 0, 20)
       display.show()
 
-      if not GPSsend.connect_wifi(ESSID, PASS):
+      if not GPSsend.connect_wifi(WIFI['essid'], WIFI['pass']):
           display.text("!!wifi not found!!", 0, 30)
           display.show()
 
