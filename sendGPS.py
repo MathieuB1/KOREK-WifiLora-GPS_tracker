@@ -54,6 +54,8 @@ def startGPS():
               display.text("lora packet sent!", 0, 0)
               display.text("sleeping...", 0, 10)
               display.show()
+
+              print('entering deepsleep mode!')
               sleep(1)
               machine.deepsleep(DEEPSLEEP)
       else:

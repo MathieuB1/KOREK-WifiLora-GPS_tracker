@@ -7,19 +7,19 @@ except:
   import socket
 
 from commonSetter import setCommon
-import network
+import machine, network
 import json
 from time import sleep
-import esp, machine
 
 
+import esp
 esp.osdebug(None)
 
 import gc
 gc.collect()
 
 ssid = 'LOCAT-AP'
-password = '12345678'
+password = '123456789'
 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
@@ -28,7 +28,6 @@ ap.config(essid=ssid, authmode=network.AUTH_WPA_WPA2_PSK, password=password)
 while ap.active() == False:
   pass
 
-print('Connection successful')
 
 def web_page(isSender):
 
@@ -119,6 +118,7 @@ def startWebServer(isSender=False):
 
   while True:
 
+    print('Connection successful')
     conn, addr = s.accept()
 
     print('Got a connection from %s' % str(addr))

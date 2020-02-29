@@ -7,7 +7,7 @@ def setCommon(isSender, dict_res):
 
   file = open("common.py","w")
   file.write(default_conf)
-  file.write('DEEPSLEEP=%s\n' % dict_res.get("frequency","0"))
+  file.write('DEEPSLEEP=%s\n' % (str(int(dict_res.get("frequency",0))*1000)))
   tuple_korek = (dict_res.get("korek_username",""),dict_res.get("korek_password",""),dict_res.get("title",""),) if isSender else (dict_res["korek_username"],dict_res["korek_password"],dict_res["title"],)
   file.write('KOREK={"korek_host":"https://korek.ml", "korek_username":"%s", "korek_password":"%s", "title":"%s" }\n' % tuple_korek )
   tuple_wifi = (dict_res.get("essid",""),dict_res.get("wifi_pass",""),) if isSender else (dict_res["essid"],dict_res["wifi_pass"],)

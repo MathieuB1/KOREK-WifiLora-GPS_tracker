@@ -11,7 +11,7 @@ def main():
 
     try:
         file = open("common.py", "r")
-        default_conf = len(file.read())
+        default_conf = len(file.read()[:128])
         file.close()
     except:
         pass
