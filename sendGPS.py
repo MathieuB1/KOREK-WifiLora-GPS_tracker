@@ -10,11 +10,6 @@ from time import sleep
 
 def startGPS():
 
-  try:
-    GPSsend.disconnect()
-  except:
-    pass
-
   machine.freq(40000000)
 
   started = False

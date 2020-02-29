@@ -9,10 +9,10 @@ except:
 from commonSetter import setCommon
 import network
 import json
+from time import sleep
+import esp, machine
 
 
-
-import esp
 esp.osdebug(None)
 
 import gc
@@ -138,6 +138,9 @@ def startWebServer(isSender=False):
       oled.resetScreen(display)
       display.text("starting sender..." if isSender else "start receiver..." , 0, 0)
       display.show()
+
+      sleep(1)
+      machine.reset()
 
       return False
     except Exception as e: 

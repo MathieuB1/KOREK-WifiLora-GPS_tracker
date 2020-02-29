@@ -11,13 +11,10 @@ Live GPS-tracker for KOREK
 
 #### Feature:
 
-  - Capture gps data
-  - Send data through Wifi & Lora
+  - Capture gps data and send it to korek.ml
+  - Send data using Wifi & Lora
   - Track your pet using korek-react.ml
-
-#### Installation
-
-> Connect your Heltec chip
+  - Webserver for configuring your tracker
 
 ##### Configure your env & Copy micropython on Board
 ```
@@ -28,12 +25,14 @@ sudo esptool.py --port /dev/ttyUSB0 erase_flash
 sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-20190529-v1.11.bin
 ```
 
-##### Copy files into Board
+##### Installation
 ```
+# 1. Clone this repo
+# 2. Set receiver to True/False in main.py (Default is the Lora sender)
+# 3. Upload to Heltec v2 board
 sudo rshell -p /dev/ttyUSB0
-# Clone this repo & modify the common.py to add your KOREK credentials & Wifi account
-# Comment/Uncomment your chip mode in main.py (Default is the Lora sender)
 cd KOREK-WifiLora-GPS_tracker/ && cp -r * /pyboard/
+# 3. Reboot your board and connect to LOCAT-AP ip address shown on your display board to add your korek-react.ml credentials & Wifi account
 ```
 
 #### Debug
