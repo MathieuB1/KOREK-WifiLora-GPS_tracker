@@ -1,4 +1,5 @@
 import machine
+
 from common import *
 from GPStracker import GPSsend, GPStracker
 from Display import oled
@@ -8,6 +9,8 @@ from time import sleep
 
 
 def startGPS():
+
+  GPSsend.disconnect()
 
   machine.freq(40000000)
 

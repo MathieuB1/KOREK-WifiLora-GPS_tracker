@@ -3,10 +3,11 @@ from Web.Webserver import startWebServer
 
 
 def main():
-    print("start korek tracking...")
-
-    default_conf = 0
+    # Board is the Sender by Default
     receiver = False
+
+    print("start korek tracking...")
+    default_conf = 0
 
     try:
         file = open("common.py", "r")
