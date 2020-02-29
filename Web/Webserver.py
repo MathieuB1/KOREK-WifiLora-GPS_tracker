@@ -78,7 +78,19 @@ def web_page(isSender):
   <p/>
   <p/>""" % (KOREK.get("title",""),)
 
-  html += html_receiver if not isSender else ""
+  html_sender = """<p>
+  <span>Frequency:</span>
+   <select name="frequency" required>
+    <option value="0">no sleep</option>
+    <option value="10">each 10 seconds</option>
+    <option value="30">each 30 seconds</option>
+    <option value="60">each minute</option>
+    <option value="3600">hourly</option>
+    <option value="86400">daily</option>
+  </select> 
+  <p/>"""
+
+  html += html_receiver if not isSender else html_sender
   
   html += """<input type="submit" value="Send" />
   </form>

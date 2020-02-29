@@ -1,5 +1,3 @@
-DEEPSLEEP=20000
-
 # Display Pins
 SCL=15
 SDA=4

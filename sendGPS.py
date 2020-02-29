@@ -10,7 +10,10 @@ from time import sleep
 
 def startGPS():
 
-  GPSsend.disconnect()
+  try:
+    GPSsend.disconnect()
+  except:
+    pass
 
   machine.freq(40000000)
 
@@ -51,7 +54,13 @@ def startGPS():
         if response:
           if response['message'] == 'ok':
             lora_counter += 1
-            #machine.deepsleep(DEEPSLEEP)
+            if DEEPSLEEP > 0:
+              oled.resetScreen(display)
+              display.text("lora packet sent!", 0, 0)
+              display.text("sleeping...", 0, 10)
+              display.show()
+              sleep(1)
+              machine.deepsleep(DEEPSLEEP)
       else:
         display.text("lora not sent!", 0, 50)
       display.show()
