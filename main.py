@@ -1,6 +1,17 @@
 import sendGPS, receiveGPS
 from Web.Webserver import startWebServer
+import os, machine
 
+def reset_conf_file ():
+    # PRG button pressed
+    button = machine.Pin(0, machine.Pin.IN, machine.Pin.PULL_UP).value()
+    if button == 0:
+        print("reset button pressed")
+        os.remove("common.py")
+        file = open("common.py", "w")
+        file.write("")
+        file.close()
+        machine.reset()
 
 def main():
     # Board is the Sender by Default
@@ -8,6 +19,8 @@ def main():
 
     print("start korek tracking...")
     default_conf = 0
+
+    reset_conf_file()
 
     try:
         file = open("common.py", "r")

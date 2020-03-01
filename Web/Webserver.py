@@ -21,14 +21,6 @@ gc.collect()
 ssid = 'LOCAT-AP'
 password = '123456789'
 
-ap = network.WLAN(network.AP_IF)
-ap.active(True)
-ap.config(essid=ssid, authmode=network.AUTH_WPA_WPA2_PSK, password=password)
-
-while ap.active() == False:
-  pass
-
-
 def web_page(isSender):
 
   WIFI = {}
@@ -103,6 +95,14 @@ def confirm():
   return html
 
 def startWebServer(isSender=False):
+
+  ap = network.WLAN(network.AP_IF)
+  ap.active(True)
+  ap.config(essid=ssid, authmode=network.AUTH_WPA_WPA2_PSK, password=password)
+
+  while ap.active() == False:
+    pass
+
 
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind(('', 80))

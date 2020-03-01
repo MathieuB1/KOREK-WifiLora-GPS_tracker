@@ -4,6 +4,7 @@ from GPStracker import GPStracker
 from GPStracker import GPSsend
 from Display import oled
 from LightLora import loratool
+from Battery import battery
 
 def receiveGPS():
 
@@ -26,9 +27,13 @@ def receiveGPS():
   aes_key = KOREK['title']
 
   lora_signal = -999
+
+  battery_level = 0
+  min_battery_level = 0
   
   while True:
     gps = {"lat": 0, "lon": 0, "precision": 100}
+    battery_level = battery.read_battery_level()
 
     try:
       response = loratool.syncRead(aes_key)
@@ -53,7 +58,10 @@ def receiveGPS():
 
       oled.resetScreen(display)
       display.text("tracking " + KOREK["title"], 0, 0)
-      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      if battery_level > min_battery_level:
+        display.text("voltage:" + str(battery_level) + "V", 0, 10)
+      else:
+         display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
@@ -82,7 +90,10 @@ def receiveGPS():
     else:
       oled.resetScreen(display)
       display.text("no gps precision", 0, 0)
-      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      if battery_level > min_battery_level:
+        display.text("voltage:" + str(battery_level) + "V", 0, 10)
+      else:
+         display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
