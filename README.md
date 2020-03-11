@@ -20,9 +20,9 @@ Live GPS-tracker for KOREK
 ```
 sudo apt-get install python3-pip
 sudo pip3 install esptool rshell
-wget https://micropython.org/resources/firmware/esp32-20190529-v1.11.bin
+wget https://micropython.org/resources/firmware/esp32-idf4-20191220-v1.12.bin
 sudo esptool.py --port /dev/ttyUSB0 erase_flash
-sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-20190529-v1.11.bin
+sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-idf4-20191220-v1.12.bin
 ```
 
 ##### Installation

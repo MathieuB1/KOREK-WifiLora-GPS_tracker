@@ -1,8 +1,17 @@
 import machine, time
+from GPStracker import PINtrigger
+
 
 def start_gps(rx):
+  #Vext
+  PINtrigger.pull_up_pin(21)
   gps_module = machine.UART(1, baudrate=9600, bits=8, parity=None, stop=1, rx=rx)
   return gps_module
+
+def stop_gps():
+  PINtrigger.pull_down_pin(1)
+  #Vext
+  PINtrigger.pull_down_pin(21)
 
 def get_decimals(data):
   try:

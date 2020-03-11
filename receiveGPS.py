@@ -29,7 +29,6 @@ def receiveGPS():
   lora_signal = -999
 
   battery_level = 0
-  min_battery_level = 0
   
   while True:
     gps = {"lat": 0, "lon": 0, "precision": 100}
@@ -58,7 +57,7 @@ def receiveGPS():
 
       oled.resetScreen(display)
       display.text("tracking " + KOREK["title"], 0, 0)
-      if battery_level > min_battery_level:
+      if battery_level < MIN_BATTERY_LEVEL:
         display.text("voltage:" + str(battery_level) + "V", 0, 10)
       else:
          display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
@@ -90,7 +89,7 @@ def receiveGPS():
     else:
       oled.resetScreen(display)
       display.text("no gps precision", 0, 0)
-      if battery_level > min_battery_level:
+      if battery_level < MIN_BATTERY_LEVEL:
         display.text("voltage:" + str(battery_level) + "V", 0, 10)
       else:
          display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
