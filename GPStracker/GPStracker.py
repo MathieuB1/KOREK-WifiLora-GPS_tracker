@@ -27,6 +27,7 @@ def get_decimals(data):
     return(decimal_lat, decimal_lon)
   except:
     print('Cannot decode gps position!')
+    return False
 
 
 def decode_gps(gps_module):
@@ -51,6 +52,9 @@ def decode_gps(gps_module):
           continue
 
         coordinates = get_decimals(gps)
+
+        if not coordinates:
+          continue
 
         data["lat"] = coordinates[0]
         data["lon"] = coordinates[1]

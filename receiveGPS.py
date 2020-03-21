@@ -6,9 +6,14 @@ from Display import oled
 from LightLora import loratool
 from Battery import battery
 
+def activate_battery_led(pin):
+  onboard_led = machine.Pin(pin, machine.Pin.OUT)
+  onboard_led.on()
+
 def receiveGPS():
 
   #machine.freq(160000000)
+  low_battery_led = 25
 
   started = False
   product_id = False
@@ -31,8 +36,9 @@ def receiveGPS():
   battery_level = 0
   
   while True:
-    gps = {"lat": 0, "lon": 0, "precision": 100}
     battery_level = battery.read_battery_level()
+
+    gps = {"date": "", "lat": 0, "lon": 0, "precision": 100}
 
     try:
       response = loratool.syncRead(aes_key)
@@ -42,8 +48,9 @@ def receiveGPS():
         display.show()
 
         if response['message'] == "ok" or response['message'] == "ack":
-          # Save battery
           print('lora received')
+        elif response['message'] == "low":
+          activate_battery_led(low_battery_led)
         else:
           lora_counter += 1 
           gps = json.loads(response['message'].replace("'","\""))
@@ -53,17 +60,18 @@ def receiveGPS():
       print('Nope this is not our Lora packet!')
       continue
 
-    if type(gps) is dict and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
+    print(gps)
+
+    if type(gps) is dict and gps['date'] != "" and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < PRECISION:
 
       oled.resetScreen(display)
       display.text("tracking " + KOREK["title"], 0, 0)
-      if battery_level < MIN_BATTERY_LEVEL:
-        display.text("voltage:" + str(battery_level) + "V", 0, 10)
-      else:
-         display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+      if battery_level < MIN_BATTERY_LEVEL:
+        display.text("voltage:" + str(battery_level) + "V", 0, 50)
       display.show()
 
       if tracking_date != gps['date']:
@@ -89,12 +97,11 @@ def receiveGPS():
     else:
       oled.resetScreen(display)
       display.text("no gps precision", 0, 0)
-      if battery_level < MIN_BATTERY_LEVEL:
-        display.text("voltage:" + str(battery_level) + "V", 0, 10)
-      else:
-         display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
+      display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+      if battery_level < MIN_BATTERY_LEVEL:
+        display.text("voltage:" + str(battery_level) + "V", 0, 50)
       display.show()
 
