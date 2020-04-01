@@ -72,12 +72,13 @@ def web_page(isSender):
   html_sender = """<p>
   <span>Frequency:</span>
    <select name="frequency" required>
-    <option value="0">no sleep</option>
-    <option value="10">each 10 seconds</option>
-    <option value="30">each 30 seconds</option>
-    <option value="60">each minute</option>
-    <option value="3600">hourly</option>
-    <option value="86400">daily</option>
+    <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
+    <option value="30">30 seconds sleep (12 hours battery)</option>
+    <option value="60">1 minute sleep (16 hours battery)</option>
+    <option value="300">5 minutes sleep (1 day 12 hours battery)</option>
+    <option value="600">10 minutes sleep (3 days battery)</option>
+    <option value="1800">30 minutes sleep (9 days battery)</option>
+    <option value="3600">1 hour sleep (9 days battery)</option>
   </select> 
   <p/>"""
 
