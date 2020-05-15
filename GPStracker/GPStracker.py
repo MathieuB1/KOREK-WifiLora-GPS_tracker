@@ -1,7 +1,6 @@
 import machine, time
 from GPStracker import PINtrigger
 
-
 def start_gps(rx):
   #Vext
   PINtrigger.pull_up_pin(21)

@@ -8,9 +8,7 @@ from LightLora import loratool
 import time
 
 
-def startGPS():
-
-  oled_display = False
+def startGPS(oled_display=False):
 
   machine.freq(40000000)
 

@@ -7,7 +7,7 @@ Live GPS-tracker for KOREK
 - 1 Heltec V2 ESP32 Board with Wifi & Lora
 - Average Consumption 0.08A max 0.27A
 - 1 Heltec V2 ESP32 Board with Wifi & Lora & Pin 17 is used for capturing GPS data
-- Consumption 0.25A max 0.37A
+- Average consumption 0.25A max 0.37A
 
 #### Feature:
 
@@ -15,6 +15,7 @@ Live GPS-tracker for KOREK
   - Send data using Wifi & Lora
   - Track your pet using korek-react.ml
   - Webserver for configuring your tracker
+  - Battery level support
 
 ##### Configure your env & Copy micropython on Board
 ```
@@ -30,7 +31,7 @@ sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-idf4-
 # 1. Clone this repo
 # 2. Set receiver to True/False in main.py (Default is the Lora sender)
 # 3. Upload to Heltec v2 board
-sudo rshell -p /dev/ttyUSB0
+sudo rshell -p /dev/ttyUSB0 -b 115200
 cd KOREK-WifiLora-GPS_tracker/ && cp -r * /pyboard/
 # 3. Reboot your board and connect to LOCAT-AP ip address shown on your display board to add your korek-react.ml credentials & Wifi account
 ```

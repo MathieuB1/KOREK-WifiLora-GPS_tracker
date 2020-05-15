@@ -95,7 +95,7 @@ def confirm():
             <body><h1>Korek Tracking Configured!</h1></body></html>"""
   return html
 
-def startWebServer(isSender=False):
+def startWebServer(isSender, oled_display):
 
   ap = network.WLAN(network.AP_IF)
   ap.active(True)
@@ -110,12 +110,13 @@ def startWebServer(isSender=False):
   s.listen(5)
   #s.settimeout(timeout)
 
-  display = oled.startDisplay(SCL,SDA,RST_SCREEN)
-  oled.resetScreen(display)
-  display.text("starting webserver...", 0, 0)
-  display.text("connect to:", 0, 10)
-  display.text(str(ap.ifconfig()[0]), 0, 20)
-  display.show()
+  if oled_display:
+    display = oled.startDisplay(SCL,SDA,RST_SCREEN)
+    oled.resetScreen(display)
+    display.text("starting webserver...", 0, 0)
+    display.text("connect to:", 0, 10)
+    display.text(str(ap.ifconfig()[0]), 0, 20)
+    display.show()
 
   while True:
 

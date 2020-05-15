@@ -31,12 +31,13 @@ def main():
 
     if receiver:
         print("starting in receiver mode!")
-        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=False)
+        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=False, oled_display=True)
         receiveGPS.receiveGPS()
     else:
+        oled_display = False
         print("starting in sender mode!")
-        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=True)
-        sendGPS.startGPS()
+        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=True, oled_display=oled_display)
+        sendGPS.startGPS(oled_display=oled_display)
 
 if __name__ == '__main__':
   main()
