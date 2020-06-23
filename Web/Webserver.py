@@ -73,8 +73,9 @@ def web_page(isSender):
   <span>Frequency:</span>
    <select name="frequency" required>
     <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
-    <option value="30">30 seconds sleep (12 hours battery)</option>
-    <option value="60">1 minute sleep (16 hours battery)</option>
+    <option value="30">30 seconds sleep (8 hours battery)</option>
+    <option value="60">1 minute sleep (10 hours battery)</option>
+    <option value="120">2 minutes sleep (20 hours battery)</option>
     <option value="300">5 minutes sleep (1 day 12 hours battery)</option>
     <option value="600">10 minutes sleep (3 days battery)</option>
     <option value="1800">30 minutes sleep (9 days battery)</option>
