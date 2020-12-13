@@ -1,7 +1,7 @@
 import network
 import urequests
 import time
-
+import socket
 
 def connect_wifi(essid, password):
   wifi_timeout = 10
@@ -19,8 +19,8 @@ def connect_wifi(essid, password):
         return False
     return 'wifi successfuly connected!'
   except:
-      print('Cannot connect to wifi!')
-      return False
+    print('Cannot connect to wifi!')
+    return False
 
 def disconnect():
     station = network.WLAN(network.STA_IF)
@@ -28,9 +28,25 @@ def disconnect():
     station.active(False)
     return 'wifi disconnected!'
 
+def associate_to_sender(ap_name, ap_password, aes_pass, frequency):
+  station = network.WLAN(network.STA_IF)
+  station.active(True)
+  password_set = False
+  while not password_set:
+    aps = station.scan()
+    for i in aps:
+      if(i[0].startswith(ap_name)):
+        connect_wifi(i[0], ap_password)
+        addr_info = socket.getaddrinfo("192.168.4.1", 80)[0][-1]
+        s = socket.socket()
+        data = "title=" + aes_pass + "&frequency=" + frequency
+        s.send(bytes('POST / HTTP/1.0\r\nHost: %s\r\n\r\n%s' % (addr_info, data), 'utf8'))
+        password_set = True
+        break
+
 def existing_product(create_title, korek):
   try:
-    url = korek["korek_host"] + "/products/?search=" + create_title
+    url = korek["korek_host"] + "/products/?search=" + create_title + "&zip=true"
     headers = {'Content-Type': "application/json", 'Authorization': 'Bearer ' + str(get_token(korek))}
     response = urequests.request("GET", url, headers=headers)
     if response.status_code == 200:
@@ -49,7 +65,7 @@ def existing_product(create_title, korek):
 
 def create_product(creation_date, korek):
   try:
-    url = korek["korek_host"] + "/products/"
+    url = korek["korek_host"] + "/products/?zip=true"
     create_title = korek["title"] + "-" + str(creation_date)
 
     # Check if products exists

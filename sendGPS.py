@@ -16,8 +16,10 @@ def startGPS(oled_display=False):
   _min_battery_level = MIN_BATTERY_LEVEL
   _precision = PRECISION
   _wait_for_gps = WAIT_FOR_GPS
+  _korek = KOREK
+  _aes = AES
 
-  create_title = KOREK['title']
+  create_title = _korek['title']
 
   if oled_display:
     display = oled.startDisplay(SCL,SDA,RST_SCREEN)
@@ -39,7 +41,7 @@ def startGPS(oled_display=False):
   failures = 10 # keep tracking signal for 3 min 30 seconds
   gps_timeout = 60000 * 5 # wait for gps during 5 mins
 
-  aes_key = create_title
+  aes_key = _aes
 
   start_time = time.ticks_ms()
 

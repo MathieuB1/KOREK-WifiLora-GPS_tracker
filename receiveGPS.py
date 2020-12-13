@@ -20,6 +20,7 @@ def receiveGPS():
   _min_battery_level = MIN_BATTERY_LEVEL
   _korek = KOREK
   _wifi = WIFI
+  _aes = AES
 
   started = False
   product_id = False
@@ -35,7 +36,7 @@ def receiveGPS():
   
   tracking_date = ""
 
-  aes_key = create_title
+  aes_key = _aes
 
   lora_signal = -999
 
