@@ -86,11 +86,13 @@ def web_page(isSender):
   <form action="save_locat" method="post">
   <p>
   <span>Cat Name:</span>
-  <input pattern=".{4,}" title="2 characters minimum" value="%s" name="title" required/>
+  <input pattern=".{4,}" title="4 characters minimum" value="%s" name="title" required/>
   <p/>
   <p/>""" % (KOREK.get("title",""),)
 
   html_sender = """<p>
+  <span>AES Key:</span>
+  <input pattern=".{6,}" title="6 characters minimum" value="" name="aes" required/>
   <span>Frequency:</span>
    <select name="frequency" required>
     <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
@@ -174,7 +176,7 @@ def startWebServer(isSender, oled_display):
         if oled_display:
           display.text("pairing...", 0, 10)
           display.show()
-        associate_to_sender(ssid, password, dict_res.get("aes"), dict_res.get("frequency"))
+        associate_to_sender(ssid, password, dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
         if oled_display:
           oled.resetScreen(display)
           display.text("pairing ok", 0, 10)

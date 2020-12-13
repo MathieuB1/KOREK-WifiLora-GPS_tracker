@@ -33,9 +33,12 @@ sudo esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x1000 esp32-idf4-
 # 3. Upload to Heltec v2 board
 sudo rshell -p /dev/ttyUSB0 -b 115200
 cd KOREK-WifiLora-GPS_tracker/ && cp -r * /pyboard/
-# 3. Reboot your board and connect to LOCAT-AP ip address shown on your display board to add your korek-react.ml credentials & Wifi account
+# 3. Reboot your board and connect to LOCAT-AP with ip address shown on your display board to add your korek-react.ml credentials & Wifi account
 ```
-
+#### Web Server
+essid: LOCAT-AP
+pass: 123456789
+webserver: http://192.168.4.1/
 #### Debug
 ```
 sudo rshell -p /dev/ttyUSB0
