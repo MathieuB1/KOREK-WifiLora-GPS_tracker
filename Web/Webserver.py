@@ -93,6 +93,8 @@ def web_page(isSender):
   html_sender = """<p>
   <span>AES Key:</span>
   <input pattern=".{6,}" title="6 characters minimum" value="" name="aes" required/>
+  </p>
+  <p>
   <span>Frequency:</span>
    <select name="frequency" required>
     <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
