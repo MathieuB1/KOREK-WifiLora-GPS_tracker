@@ -7,13 +7,6 @@ from Display import oled
 from LightLora import loratool
 import time
 
-# See if we got a whistle
-#response = loratool.syncRead(aes_key)
-#if response:
-#  if response['message'] == 'up':
-#    loratool.syncSend('up_ok', aes_key)
-#    lora_counter_failure = -5
-
 def deepSleep(sleep):
   print('entering deepsleep mode!')
   GPStracker.stop_gps()
@@ -53,7 +46,7 @@ def startGPS(oled_display=False):
   while True:
 
     # TO REMOVE
-    #battery_level = battery.read_battery_level()
+    battery_level = battery.read_battery_level()
     #print("battery_level:" + str(battery_level))
     #file = open("batt_level.txt", "a")
     #file.write(str(battery_level) + "\n")
