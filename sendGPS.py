@@ -53,11 +53,11 @@ def startGPS(oled_display=False):
   while True:
 
     # TO REMOVE
-    '''battery_level = battery.read_battery_level()
-    print("battery_level:" + str(battery_level))
-    file = open("batt_level.txt", "a")
-    file.write(str(battery_level) + "\n")
-    file.close()'''
+    #battery_level = battery.read_battery_level()
+    #print("battery_level:" + str(battery_level))
+    #file = open("batt_level.txt", "a")
+    #file.write(str(battery_level) + "\n")
+    #file.close()
 
     print("counter: " + str(len(str(trigger_gps_counter)) * 60000))
     print("frequency: " + str(_deepsleep))
