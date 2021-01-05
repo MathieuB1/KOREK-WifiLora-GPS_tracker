@@ -20,13 +20,13 @@ def syncSend(txt, aes_key):
     return False
   return True
 
-def syncRead(aes_key):
+def syncRead(aes_key, sleep=10):
   print('reading lora packet')
   waitingTime = 0
   while not lr.isPacketAvailable():
     time.sleep(1)
     waitingTime += 1
-    if waitingTime > 10: # wait 10 seconds for receiving the packet 
+    if waitingTime > sleep: # wait 10 seconds for receiving the packet
       return False
   try:
     packet = lr.readPacket()

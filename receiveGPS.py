@@ -18,6 +18,7 @@ def receiveGPS():
 
   _precision = PRECISION
   _min_battery_level = MIN_BATTERY_LEVEL
+  _deepsleep = DEEPSLEEP
   _korek = KOREK
   _wifi = WIFI
   _aes = AES
@@ -40,9 +41,16 @@ def receiveGPS():
 
   lora_signal = -999
 
+  voltage_sender = "0"
+
+  whistle = True
+
   while True:
 
-    battery_level = battery.read_battery_level()
+    if _deepsleep > 60000 and whistle:
+      loratool.syncSend('po', aes_key)
+      display.text("whistle...", 0, 0)
+      display.show()
 
     gps = {"date": "", "lat": 0, "lon": 0, "precision": 100}
 
@@ -53,13 +61,20 @@ def receiveGPS():
         display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
         display.show()
 
-        if response['message'] == "ok" or response['message'] == "ack":
+        message = response['message']
+        if message == "ok" or message == "ack":
           print('lora received')
-        elif response['message'] == "low":
+        elif message == "pi":
+          whistle = False
+          print('whistle sent!')
+        elif message.startswith("low"):
+          print("battery: " + str(message))
+          voltage_sender = str(message.split("-")[1]) if len(message.split("-")) > 1 else "0"
           activate_battery_led(low_battery_led)
         else:
-          lora_counter += 1 
-          gps = json.loads(response['message'].replace("'","\""))
+          print("mess:" + str(message))
+          lora_counter += 1
+          gps = json.loads(message.replace("'","\""))
           _korek['title'] = gps['title']
     except Exception as e:
       print(str(e))
@@ -76,8 +91,8 @@ def receiveGPS():
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
-      if battery_level < _min_battery_level:
-        display.text("voltage:" + str(battery_level) + "V", 0, 50)
+      if voltage_sender != "0":
+        display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
       display.show()
 
       if tracking_date != gps['date']:
@@ -102,12 +117,11 @@ def receiveGPS():
             failure_counter = 0
     else:
       oled.resetScreen(display)
-      display.text("no gps precision", 0, 0)
       display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
-      if battery_level < _min_battery_level:
-        display.text("voltage:" + str(battery_level) + "V", 0, 50)
+      if voltage_sender != "0":
+        display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
       display.show()
 

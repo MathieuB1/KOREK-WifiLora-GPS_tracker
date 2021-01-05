@@ -15,7 +15,8 @@ Live GPS-tracker for KOREK
   - Send data using Wifi & Lora
   - Track your pet using korek-react.ml
   - Webserver for configuring your tracker
-  - Battery level support
+  - Whistle let you trigger gps acquisition
+  - Battery level warning
 
 ##### Configure your env & Copy micropython on Board
 ```

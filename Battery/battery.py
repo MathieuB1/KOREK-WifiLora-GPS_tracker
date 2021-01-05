@@ -8,5 +8,5 @@ def read_battery_level():
     adc.width(ADC.WIDTH_9BIT)   # set 9 bit return values (returned range 0-511)
     value = adc.read()                  # read value using the newly configured attenuation and width
     Pin(battery_pin, Pin.PULL_DOWN)
-    return round((value * 3.6) / 511, 2) # Cannot read more than 3.6V (need to reduce voltage before 10K & 100K resistors)
-
+    #return round((value * 3.6) / 511, 2) # !! Cannot read more than 3.6V
+    return round(((value * 100)/110 * 5)/511, 3) # voltage reducer 10K & 100K resistors
