@@ -2,7 +2,7 @@ import machine
 import os
 from Battery import battery
 from common import *
-from GPStracker import GPSsend, GPStracker
+from GPStracker import GPStracker
 from Display import oled
 from LightLora import loratool
 import time
@@ -35,6 +35,7 @@ def startGPS(oled_display=False):
 
   start_time = time.ticks_ms()
 
+  # Each minute we write a counter
   print("writing counter")
   with open("counter.txt", "a") as file:
     file.write("1")
@@ -43,13 +44,15 @@ def startGPS(oled_display=False):
   file.close()
   print(trigger_gps_counter)
 
+  whisper_time = None
+
   while True:
 
     # TO REMOVE
     battery_level = battery.read_battery_level()
     #print("battery_level:" + str(battery_level))
     #file = open("batt_level.txt", "a")
-    #file.write(str(battery_level) + "\n")
+    #file.write(str(battery_level) + ";" + str(battery_level) + "\n")
     #file.close()
 
     print("counter: " + str(len(str(trigger_gps_counter)) * 60000))
@@ -62,6 +65,7 @@ def startGPS(oled_display=False):
         if response['message'] == 'po':
           print("pet call received!")
           failures = 10
+          whisper_time = time.ticks_ms()
           for i in range(3):
             loratool.syncSend("pi", aes_key)
 
@@ -130,8 +134,15 @@ def startGPS(oled_display=False):
                 display.text("sleeping...", 0, 10)
                 display.show()
 
-              GPStracker.stop_gps()
-              deepSleep(_gps_sleep)
+              if whisper_time:
+                elaspsed_whisper = (time.ticks_ms() - whisper_time)
+                print("elaspsed whisper time: " + str(elaspsed_whisper))
+                if elaspsed_whisper > _gps_sleep * 5:
+                  GPStracker.stop_gps()
+                  deepSleep(_gps_sleep)
+              else:
+                  GPStracker.stop_gps()
+                  deepSleep(_gps_sleep)
       else:
         if oled_display:
           display.text("lora not sent!", 0, 50)

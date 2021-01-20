@@ -1,6 +1,5 @@
 import machine, json
 from common import *
-from GPStracker import GPStracker
 from GPStracker import GPSsend
 from Display import oled
 from LightLora import loratool
