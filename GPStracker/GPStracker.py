@@ -43,7 +43,6 @@ def decode_gps(gps_module):
       line = gps_module.readline()
       if line is None:
         continue
-      print(line)
       elapsed_time = time.ticks_ms() - start_time
       if elapsed_time > timeout:
           return data

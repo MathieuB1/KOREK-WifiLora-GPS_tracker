@@ -58,6 +58,7 @@ def startGPS(oled_display=False):
     print("counter: " + str(len(str(trigger_gps_counter)) * 60000))
     print("frequency: " + str(_deepsleep))
 
+    # Activate only when we are not in real tracking mode
     if _deepsleep > 60000:
       response = loratool.syncRead(aes_key)
       # This is the pet call
@@ -66,9 +67,12 @@ def startGPS(oled_display=False):
           print("pet call received!")
           failures = 10
           whisper_time = time.ticks_ms()
-          for i in range(3):
+          response = False
+          while not response:
             loratool.syncSend("pi", aes_key)
-
+            response = loratool.syncRead(aes_key)
+            if response and response['message'] == 'ok':
+                response = True
       # This is the normal usage
       elif len(str(trigger_gps_counter)) * 60000 >= _deepsleep:
         print("starting gps...")
@@ -122,34 +126,33 @@ def startGPS(oled_display=False):
         loratool.syncSend(str(gps), aes_key)
         print("sending position!")
         response = loratool.syncRead(aes_key)
-        if response:
-          if response['message'] == 'ok':
-            print("position received!")
-            lora_counter += 1
-            lora_counter_failure = 0
-            if _deepsleep > 0:
-              if oled_display:
-                oled.resetScreen(display)
-                display.text("lora packet sent!", 0, 0)
-                display.text("sleeping...", 0, 10)
-                display.show()
+        if response and response['message'] == 'ok':
+          print("position received!")
+          lora_counter += 1
+          lora_counter_failure = 0
+          if _deepsleep > 0:
+            if oled_display:
+              oled.resetScreen(display)
+              display.text("lora packet sent!", 0, 0)
+              display.text("sleeping...", 0, 10)
+              display.show()
 
-              if whisper_time:
-                elaspsed_whisper = (time.ticks_ms() - whisper_time)
-                print("elaspsed whisper time: " + str(elaspsed_whisper))
-                if elaspsed_whisper > _gps_sleep * 5:
-                  GPStracker.stop_gps()
-                  deepSleep(_gps_sleep)
-              else:
-                  GPStracker.stop_gps()
-                  deepSleep(_gps_sleep)
-      else:
-        if oled_display:
-          display.text("lora not sent!", 0, 50)
+            if whisper_time:
+              elaspsed_whisper = (time.ticks_ms() - whisper_time)
+              print("elaspsed whisper time: " + str(elaspsed_whisper))
+              if elaspsed_whisper > _gps_sleep * 5:
+                GPStracker.stop_gps()
+                deepSleep(_gps_sleep)
+            else:
+                GPStracker.stop_gps()
+                deepSleep(_gps_sleep)
+        else:
+          if oled_display:
+            display.text("lora not sent!", 0, 50)
 
-        lora_counter_failure += 1
-        if lora_counter_failure == failures:
-          deepSleep(_gps_sleep)
+          lora_counter_failure += 1
+          if lora_counter_failure == failures:
+            deepSleep(_gps_sleep)
 
       if oled_display:
         display.show()
@@ -173,6 +176,7 @@ def startGPS(oled_display=False):
         display.text("lora sent:" + str(lora_counter), 0, 20)
 
       if battery_level < _min_battery_level:
+        print("send battery level")
         loratool.syncSend('low-' + str(battery_level), aes_key)
         if oled_display:
           display.text("low battery:" + str(battery_level), 0, 30)
