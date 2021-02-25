@@ -62,7 +62,7 @@ def receiveGPS():
         display.show()
 
         message = response['message']
-        if message == "ok" or message == "ack":
+        if message == "ack":
           print('lora received')
         elif message == "pi":
           whistle = False

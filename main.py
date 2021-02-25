@@ -36,18 +36,20 @@ def main():
         receiveGPS.receiveGPS()
     else:
         oled_display = False
+        ## Choose lora or wifi for the association
+        association_mode = "lora"
 
         print("starting in sender mode!")
         if default_conf > 0:
             print("conf loaded!")
         else:
-            ## Choose lora or wifi for the association
-            # Prepare webserver to receive a POST for association
-            # Only available on ESP chips
-            #startWebServer(isSender=True, oled_display=oled_display)
-
-            # Prepare Lora to receive a message for association
-            associateLora()
+            if association_mode == "wifi":
+                # Prepare webserver to receive a POST for association
+                # Only available on ESP chips
+                startWebServer(isSender=True, oled_display=oled_display)
+            else:
+                # Prepare Lora to receive a message for association
+                associateLora()
 
         sendGPS.startGPS(oled_display=oled_display)
 
