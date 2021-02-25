@@ -1,4 +1,5 @@
 import sendGPS, receiveGPS
+from ConfSetter.LoraSetter import associateLora
 from Web.Webserver import startWebServer
 import os, machine
 
@@ -35,8 +36,19 @@ def main():
         receiveGPS.receiveGPS()
     else:
         oled_display = False
+
         print("starting in sender mode!")
-        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=True, oled_display=oled_display)
+        if default_conf > 0:
+            print("conf loaded!")
+        else:
+            ## Choose lora or wifi for the association
+            # Prepare webserver to receive a POST for association
+            # Only available on ESP chips
+            #startWebServer(isSender=True, oled_display=oled_display)
+
+            # Prepare Lora to receive a message for association
+            associateLora()
+
         sendGPS.startGPS(oled_display=oled_display)
 
 if __name__ == '__main__':

@@ -7,6 +7,12 @@ from Display import oled
 from LightLora import loratool
 import time
 
+def removeCounterFile():
+  try:
+    os.remove("counter.txt")
+  except:
+    pass
+
 def deepSleep(sleep):
   print('entering deepsleep mode!')
   GPStracker.stop_gps()
@@ -29,20 +35,21 @@ def startGPS(oled_display=False):
   lora_counter = 0
   lora_counter_failure = 0
   failures = 5 # keep tracking signal for 1 min 52 seconds
-  gps_timeout = 60000 * 3 # wait for gps during 3 mins
+  gps_timeout = 60000 * 5 # wait for gps during 5 mins
 
   aes_key = _aes
 
   start_time = time.ticks_ms()
 
   # Each minute we write a counter
-  print("writing counter")
-  with open("counter.txt", "a") as file:
-    file.write("1")
-  file = open("counter.txt", "r")
-  trigger_gps_counter = file.read()
-  file.close()
-  print(trigger_gps_counter)
+  if _deepsleep > 60000:
+    print("writing counter")
+    with open("counter.txt", "a") as file:
+      file.write("1")
+    file = open("counter.txt", "r")
+    trigger_gps_counter = file.read()
+    file.close()
+    print(trigger_gps_counter)
 
   whisper_time = None
 
@@ -55,31 +62,28 @@ def startGPS(oled_display=False):
     #file.write(str(battery_level) + ";" + str(battery_level) + "\n")
     #file.close()
 
-    print("counter: " + str(len(str(trigger_gps_counter)) * 60000))
-    print("frequency: " + str(_deepsleep))
-
     # Activate only when we are not in real tracking mode
     if _deepsleep > 60000:
+
+      print("counter: " + str(len(str(trigger_gps_counter)) * 60000))
+      print("frequency: " + str(_deepsleep))
+
       response = loratool.syncRead(aes_key)
       # This is the pet call
-      if response:
-        if response['message'] == 'po':
+      if response and response['message'] == 'po':
           print("pet call received!")
           failures = 10
           whisper_time = time.ticks_ms()
-          response = False
-          while not response:
+          # Ensure that we send the ack
+          # As we take 2 seconds max for sending data send it 3 times at 1 second interval
+          for i in range(3):
             loratool.syncSend("pi", aes_key)
-            response = loratool.syncRead(aes_key)
-            if response and response['message'] == 'ok':
-                response = True
+            time.sleep(1)
+
       # This is the normal usage
-      elif len(str(trigger_gps_counter)) * 60000 >= _deepsleep:
+      if len(str(trigger_gps_counter)) * 60000 >= _deepsleep or whisper_time :
         print("starting gps...")
-        try:
-          os.remove("counter.txt")
-        except:
-          pass
+        removeCounterFile()
       else:
         deepSleep(_gps_sleep)
 
@@ -121,38 +125,22 @@ def startGPS(oled_display=False):
         display.show()
 
       gps['title'] = create_title
-      response = False
-      while not response:
+
+      # The most important thing in this page
+      # As we take 2 seconds max for sending data send it 3 times at 1 second interval
+      for i in range(3):
         loratool.syncSend(str(gps), aes_key)
-        print("sending position!")
-        response = loratool.syncRead(aes_key)
-        if response and response['message'] == 'ok':
-          print("position received!")
-          lora_counter += 1
-          lora_counter_failure = 0
-          if _deepsleep > 0:
-            if oled_display:
-              oled.resetScreen(display)
-              display.text("lora packet sent!", 0, 0)
-              display.text("sleeping...", 0, 10)
-              display.show()
+        time.sleep(1)
 
-            if whisper_time:
-              elaspsed_whisper = (time.ticks_ms() - whisper_time)
-              print("elaspsed whisper time: " + str(elaspsed_whisper))
-              if elaspsed_whisper > _gps_sleep * 5:
-                GPStracker.stop_gps()
-                deepSleep(_gps_sleep)
-            else:
-                GPStracker.stop_gps()
-                deepSleep(_gps_sleep)
-        else:
-          if oled_display:
-            display.text("lora not sent!", 0, 50)
-
-          lora_counter_failure += 1
-          if lora_counter_failure == failures:
-            deepSleep(_gps_sleep)
+      if whisper_time:
+        elaspsed_whisper = (time.ticks_ms() - whisper_time)
+        print("elaspsed whisper time: " + str(elaspsed_whisper))
+        if elaspsed_whisper > _gps_sleep * 5:
+          GPStracker.stop_gps()
+          deepSleep(_gps_sleep)
+      else:
+        GPStracker.stop_gps()
+        deepSleep(_gps_sleep)
 
       if oled_display:
         display.show()

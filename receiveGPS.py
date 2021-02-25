@@ -55,6 +55,7 @@ def receiveGPS():
 
     try:
       response = loratool.syncRead(aes_key)
+      print("received:" + str(response))
       if response:
         lora_signal = response['signal_strengh']
         display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
