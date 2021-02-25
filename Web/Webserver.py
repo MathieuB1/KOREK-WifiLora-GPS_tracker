@@ -1,5 +1,6 @@
+from ConfSetter.LoraSetter import associate_to_sender_lora
 from Display import oled
-from GPStracker.GPSsend import associate_to_sender
+from GPStracker.GPSsend import connect_wifi
 from common_tmp import *
 
 try:
@@ -7,12 +8,12 @@ try:
 except:
   import socket
 
-from commonSetter import setCommon
+from ConfSetter.commonSetter import setCommon
 import machine, network
 import json
 from time import sleep
 import urandom
-
+import time
 import esp
 esp.osdebug(None)
 
@@ -27,6 +28,32 @@ def random_string_size(size):
   for x in range(size):
     random_string += urandom.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
   return random_string
+
+def associate_to_sender(ap_name, ap_password, title, aes_pass, frequency, wifi=True):
+
+  data = "title=" + title + "&frequency=" + frequency + "&aes=" + aes_pass
+
+  if wifi == True:
+    print("Enable Wifi")
+    station = network.WLAN(network.STA_IF)
+    station.active(True)
+    while True:
+      print("Scan ESSIDS")
+      time.sleep(1)
+      aps = station.scan()
+      for i in aps:
+        print(i)
+        if(i[0].startswith(ap_name)):
+          print("Connect to AP")
+          connect_wifi(i[0], ap_password)
+          addr_info = socket.getaddrinfo("192.168.4.1", 80)[0][-1]
+          s = socket.socket()
+          s.connect(addr_info)
+          print("Send Post")
+          s.send(bytes('POST / HTTP/1.0\r\nHost: %s\r\n\r\n%s' % (addr_info, data), 'utf8'))
+          s.close()
+          print("Post Sent!")
+          break
 
 
 def web_page(isSender):
@@ -178,7 +205,9 @@ def startWebServer(isSender, oled_display):
         if oled_display:
           display.text("pairing...", 0, 10)
           display.show()
-        associate_to_sender(ssid, password, dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
+        # Only for ESP chips
+        #associate_to_sender(ssid, password, dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
+        associate_to_sender_lora(dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
         if oled_display:
           oled.resetScreen(display)
           display.text("pairing ok", 0, 10)
