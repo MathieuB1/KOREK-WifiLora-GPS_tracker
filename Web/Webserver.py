@@ -132,6 +132,8 @@ def web_page(isSender):
     <option value="600">10 minutes sleep (3 days battery)</option>
     <option value="1800">30 minutes sleep (9 days battery)</option>
     <option value="3600">1 hour sleep (9 days battery)</option>
+    <option value="7200">2 hour sleep (18 days battery)</option>
+    <option value="21600">6 hour sleep (54 days battery)</option>
   </select> 
   <p/>"""
 

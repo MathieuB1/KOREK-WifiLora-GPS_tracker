@@ -8,7 +8,7 @@ confirmation = 'init:ok'
 
 def associate_to_sender_lora (title, aes_pass, frequency):
     print("Pending association...")
-    data = "title=" + title + "&frequency=" + str(int(frequency)*1000) + "&aes=" + aes_pass
+    data = "title=" + title + "&frequency=" + str(frequency) + "&aes=" + aes_pass
     lora_init = "init:" + data
     while True:
         loratool.syncSend(lora_init, password)
