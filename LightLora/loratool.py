@@ -9,29 +9,36 @@ def syncSend(txt, aes_key):
     print('sending lora packet')
     lr.sendPacket(0xff, 0x41, crypted)
     sendTime = 0
-    while not lr.isPacketSent() :
+    while not lr.isPacketSent():
       time.sleep(.1)
       # after 2 seconds of waiting for send just give up
       sendTime += 1
-      if sendTime > 19 :
+      if sendTime > 5:
+        lr.sleep()
         return False
+    lr.sleep()
   except Exception as e:
+    lr.sleep()
     print(str(e))
     return False
   return True
 
 def syncRead(aes_key, sleep=5):
   print('reading lora packet')
+  lr.standby()
   waitingTime = 0
   while not lr.isPacketAvailable():
     time.sleep(1)
     waitingTime += 1
     if waitingTime > sleep: # wait 5 seconds for receiving the packet
+      lr.sleep()
       return False
   try:
     packet = lr.readPacket()
     if packet and packet.msgTxt:
-      return { "message": crypt.decryptdata(packet.msgTxt, aes_key).decode("utf-8").strip(), "signal_strengh": packet.rssi}
+      lr.sleep()
+      return {"message": crypt.decryptdata(packet.msgTxt, aes_key).decode("utf-8").strip(), "signal_strengh": packet.rssi}
   except Exception as e:
+    lr.sleep()
     print(str(e))
     return False

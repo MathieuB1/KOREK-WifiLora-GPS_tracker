@@ -96,6 +96,10 @@ class LoraUtil:
 		''' sleep the device '''
 		self.lora.sleep()
 
+	def standby(self) :
+		''' sleep the device '''
+		self.lora.standby()
+
 	def reset(self) :
 		''' reset the device '''
 		self.spic.initLoraPins() # init pins
