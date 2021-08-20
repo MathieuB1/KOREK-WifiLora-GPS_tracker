@@ -22,7 +22,9 @@ def startGPS(oled_display=False):
 
   machine.freq(40000000)
 
-  _gps_sleep = 60000
+
+  _one_minute = 60000
+  _wakeup_time = _one_minute * 5
   _deepsleep = DEEPSLEEP
   _min_battery_level = MIN_BATTERY_LEVEL
   _precision = PRECISION
@@ -41,15 +43,17 @@ def startGPS(oled_display=False):
 
   start_time = time.ticks_ms()
 
+  trigger_gps_counter = ""
+
   # Each minute we write a counter
   if _deepsleep > 60000:
     print("writing counter")
     with open("counter.txt", "a") as file:
-      file.write("1")
-    file = open("counter.txt", "r")
-    trigger_gps_counter = file.read()
-    file.close()
-    print(trigger_gps_counter)
+      for i in range(int(_wakeup_time / _one_minute)):
+        file.write("1")
+    with open("counter.txt", "r") as file:
+      trigger_gps_counter = file.read()
+      print(trigger_gps_counter)
 
   whisper_time = None
 
@@ -85,7 +89,7 @@ def startGPS(oled_display=False):
         print("starting gps...")
         removeCounterFile()
       else:
-        deepSleep(_gps_sleep)
+        deepSleep(_wakeup_time)
 
     if oled_display:
       display = oled.startDisplay(SCL, SDA, RST_SCREEN)
@@ -135,12 +139,12 @@ def startGPS(oled_display=False):
       if whisper_time:
         elaspsed_whisper = (time.ticks_ms() - whisper_time)
         print("elaspsed whisper time: " + str(elaspsed_whisper))
-        if elaspsed_whisper > _gps_sleep * 5:
+        if elaspsed_whisper > gps_timeout:
           GPStracker.stop_gps()
-          deepSleep(_gps_sleep)
+          deepSleep(_wakeup_time)
       else:
         GPStracker.stop_gps()
-        deepSleep(_gps_sleep)
+        deepSleep(_wakeup_time)
 
       if oled_display:
         display.show()
@@ -151,7 +155,7 @@ def startGPS(oled_display=False):
         print('waiting for gps precision')
         lora_counter_failure = 0
         if (elapsed_time > gps_timeout):
-          deepSleep(_gps_sleep)
+          deepSleep(_wakeup_time)
 
       # Keep-alive
       print('sending acknowlegment')
@@ -174,7 +178,7 @@ def startGPS(oled_display=False):
 
       lora_counter_failure += 1
       if lora_counter_failure == failures:
-        deepSleep(_gps_sleep)
+        deepSleep(_wakeup_time)
 
     print("failures:" + str(lora_counter_failure))
 
