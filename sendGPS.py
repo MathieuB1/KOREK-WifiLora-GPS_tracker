@@ -66,6 +66,10 @@ def startGPS(oled_display=False):
     #file.write(str(battery_level) + ";" + str(battery_level) + "\n")
     #file.close()
 
+    if battery_level < _min_battery_level:
+      print("send battery level")
+      loratool.syncSend('low-' + str(battery_level), aes_key)
+
     # Activate only when we are not in real tracking mode
     if _deepsleep > 60000:
 
@@ -168,8 +172,6 @@ def startGPS(oled_display=False):
         display.text("lora sent:" + str(lora_counter), 0, 20)
 
       if battery_level < _min_battery_level:
-        print("send battery level")
-        loratool.syncSend('low-' + str(battery_level), aes_key)
         if oled_display:
           display.text("low battery:" + str(battery_level), 0, 30)
 

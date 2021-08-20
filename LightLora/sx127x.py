@@ -239,6 +239,12 @@ class SX127x:
 	def sleep(self):
 		self.writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_SLEEP)
 
+	def wake_up_tx(self):
+		self.writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_TX)
+
+	def wake_up_rx(self):
+		self.writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_TX)
+
 	def setTxPower(self, level, outputPin=PA_OUTPUT_PA_BOOST_PIN):
 		if outputPin == PA_OUTPUT_RFO_PIN:
 			# RFO
