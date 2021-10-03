@@ -11,22 +11,22 @@ def syncSend(txt, aes_key):
     sendTime = 0
     while not lr.isPacketSent():
       time.sleep(.1)
-      # after 2 seconds of waiting for send just give up
+      # after 1 seconds of waiting for send just give up
       sendTime += 1
-      if sendTime > 5:
+      if sendTime > 9:
         return False
   except Exception as e:
     print(str(e))
     return False
   return True
 
-def syncRead(aes_key, sleep=5):
+def syncRead(aes_key, sleep=2):
   print('reading lora packet')
   waitingTime = 0
   while not lr.isPacketAvailable():
-    time.sleep(1)
+    time.sleep(.1)
     waitingTime += 1
-    if waitingTime > sleep: # wait 5 seconds for receiving the packet
+    if waitingTime > sleep * 10: # wait 2 seconds for receiving the packet
       return False
   try:
     packet = lr.readPacket()

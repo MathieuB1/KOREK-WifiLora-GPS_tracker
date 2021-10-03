@@ -97,7 +97,7 @@ class LoraUtil:
 		self.lora.sleep()
 
 	def standby(self) :
-		''' sleep the device '''
+		''' standby the device '''
 		self.lora.standby()
 
 	def reset(self) :

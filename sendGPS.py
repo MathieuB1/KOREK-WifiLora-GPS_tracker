@@ -89,7 +89,7 @@ def startGPS(oled_display=False):
             time.sleep(1)
 
       # This is the normal usage
-      if len(str(trigger_gps_counter)) * 60000 >= _deepsleep or whisper_time :
+      if len(str(trigger_gps_counter)) * 60000 >= _deepsleep or whisper_time:
         print("starting gps...")
         removeCounterFile()
       else:
@@ -117,7 +117,9 @@ def startGPS(oled_display=False):
     #gps = {"lat":7.101813, "lon":43.58843, "date": "300919", "precision":3.0}
     print(gps)
 
-    if type(gps) is dict and gps['date'] != "" and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < _precision:
+    if type(gps) is dict and gps['date'] != "" \
+            and gps['lat'] != 0 and gps['lon'] != 0 \
+            and gps['precision'] < _precision:
 
       if oled_display:
         oled.resetScreen(display)
