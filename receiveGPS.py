@@ -42,6 +42,8 @@ def receiveGPS():
 
   voltage_sender = "0"
 
+  battery_level = 0
+
   whistle = True
 
   while True:
@@ -51,7 +53,7 @@ def receiveGPS():
       display.text("whistle...", 0, 0)
       display.show()
 
-    gps = {"date": "", "lat": 0, "lon": 0, "precision": 100}
+    gps = {"date": "", "lat": 0, "lon": 0, "batt": 0, "precision": 100}
 
     try:
       response = loratool.syncRead(aes_key)
@@ -85,14 +87,22 @@ def receiveGPS():
 
     if type(gps) is dict and gps['date'] != "" and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < _precision:
 
+      whistle = False
+
       oled.resetScreen(display)
       display.text("tracking " + _korek["title"], 0, 0)
       display.text("gps:" + str(100 - gps['precision']) + "%", 0, 10)
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+
+      if gps['batt'] != 0:
+        battery_level = gps['batt']
+        display.text("batt:" + str(battery_level) + "%", 0, 50)
+
       if voltage_sender != "0":
         display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
+
       display.show()
 
       if tracking_date != gps['date']:
@@ -121,6 +131,10 @@ def receiveGPS():
       display.text("wifi sent: " + str(wifi_counter), 0, 20)
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
+
+      if battery_level != 0:
+        display.text("batt:" + str(battery_level) + "%", 0, 50)
+
       if voltage_sender != "0":
         display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
       display.show()
