@@ -15,8 +15,8 @@ def reset_conf_file ():
         machine.reset()
 
 def main():
-    # Board is the Sender by Default
-    receiver = False
+    # Board is the Receiver by Default
+    receiver = True
 
     print("start korek tracking...")
     default_conf = 0
