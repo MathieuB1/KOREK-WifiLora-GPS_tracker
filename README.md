@@ -4,10 +4,18 @@ Live GPS-tracker for KOREK
 
 #### Hardware:
 
+For the Server:
 - 1 Heltec V2 ESP32 Board with Wifi & Lora
 - Average Consumption 0.08A max 0.27A
+
+For the Client:
 - 1 Heltec V2 ESP32 Board with Wifi & Lora & Pin 17 is used for capturing GPS data
 - Average consumption 0.25A max 0.37A
+
+OR 
+
+- 1 Cubecell AB02S
+https://github.com/MathieuB1/KOREK-Lora-GPS_tracker_CubeCell_GPS-6502
 
 #### Feature:
 
