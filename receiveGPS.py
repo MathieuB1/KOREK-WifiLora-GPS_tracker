@@ -85,7 +85,12 @@ def receiveGPS():
 
     print(gps)
 
-    if type(gps) is dict and gps['date'] != "" and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < _precision:
+    if type(gps) is dict \
+            and gps.get('date') is not None \
+            and gps.get('lat') is not None \
+            and gps.get('lon') is not None \
+            and gps.get('precision') is not None \
+            and gps['date'] != "" and gps['lat'] != 0 and gps['lon'] != 0 and gps['precision'] < _precision:
 
       whistle = False
 
