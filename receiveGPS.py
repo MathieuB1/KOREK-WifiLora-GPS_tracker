@@ -64,8 +64,9 @@ def receiveGPS():
         display.show()
 
         message = response['message']
-        if message == "ack":
+        if message.startswith("ack"):
           print('lora received')
+          voltage_sender = str(message.split("-")[1]) if len(message.split("-")) > 1 else "N/A"
         elif message == "pi":
           whistle = False
           print('whistle sent!')

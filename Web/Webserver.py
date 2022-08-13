@@ -96,14 +96,14 @@ def web_page(isSender):
   <p>
   <span>Frequency:</span>
    <select name="frequency" required>
-    <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
-    <option value="30">30 seconds sleep (8 hours battery)</option>
-    <option value="60">1 minute sleep (10 hours battery)</option>
-    <option value="120">2 minutes sleep (20 hours battery)</option>
-    <option value="300">5 minutes sleep (1 day 12 hours battery)</option>
-    <option value="600">10 minutes sleep (3 days battery)</option>
-    <option value="1800">30 minutes sleep (9 days battery)</option>
-    <option value="3600">1 hour sleep (9 days battery)</option>
+    <option value="60">1 minute sleep (4 hours battery)</option>
+    <option value="120">2 minutes sleep (6 hours battery)</option>
+    <option value="300">5 minutes sleep (12 hours battery)</option>
+    <option value="600">10 minutes sleep (2 days battery)</option>
+    <option value="1800">30 minutes sleep (5 days battery)</option>
+    <option value="3600">1 hour sleep (10 days battery)</option>
+    <option value="7200">2 hour sleep (18 days battery)</option>
+    <option value="21600">6 hour sleep (54 days battery)</option>
   </select>
   <p/>""" % (WIFI.get("essid", ""), WIFI.get("pass",""), KOREK.get("korek_username",""), KOREK.get("korek_password",""),)
 
@@ -124,14 +124,12 @@ def web_page(isSender):
   <p>
   <span>Frequency:</span>
    <select name="frequency" required>
-    <option value="0">each 10 seconds (6 hours battery gps is always up!)</option>
-    <option value="30">30 seconds sleep (8 hours battery)</option>
-    <option value="60">1 minute sleep (10 hours battery)</option>
-    <option value="120">2 minutes sleep (20 hours battery)</option>
-    <option value="300">5 minutes sleep (1 day 12 hours battery)</option>
-    <option value="600">10 minutes sleep (3 days battery)</option>
-    <option value="1800">30 minutes sleep (9 days battery)</option>
-    <option value="3600">1 hour sleep (9 days battery)</option>
+    <option value="60">1 minute sleep (4 hours battery)</option>
+    <option value="120">2 minutes sleep (6 hours battery)</option>
+    <option value="300">5 minutes sleep (12 hours battery)</option>
+    <option value="600">10 minutes sleep (2 days battery)</option>
+    <option value="1800">30 minutes sleep (5 days battery)</option>
+    <option value="3600">1 hour sleep (10 days battery)</option>
     <option value="7200">2 hour sleep (18 days battery)</option>
     <option value="21600">6 hour sleep (54 days battery)</option>
   </select> 
