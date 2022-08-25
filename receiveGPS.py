@@ -40,8 +40,6 @@ def receiveGPS():
 
   lora_signal = -999
 
-  voltage_sender = "0"
-
   battery_level = 0
 
   whistle = True
@@ -66,13 +64,13 @@ def receiveGPS():
         message = response['message']
         if message.startswith("ack"):
           print('lora received')
-          voltage_sender = str(message.split("-")[1]) if len(message.split("-")) > 1 else "N/A"
+          battery_level = message.split("-")[1] if len(message.split("-")) > 1 else "N/A"
         elif message == "pi":
           whistle = False
           print('whistle sent!')
         elif message.startswith("low"):
           print("battery: " + str(message))
-          voltage_sender = str(message.split("-")[1]) if len(message.split("-")) > 1 else "0"
+          battery_level = message.split("-")[1] if len(message.split("-")) > 1 else "N/A"
           activate_battery_led(low_battery_led)
         else:
           print("mess:" + str(message))
@@ -106,9 +104,6 @@ def receiveGPS():
         battery_level = gps['batt']
         display.text("batt:" + str(battery_level) + "%", 0, 50)
 
-      if voltage_sender != "0":
-        display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
-
       display.show()
 
       if tracking_date != gps['date']:
@@ -138,10 +133,9 @@ def receiveGPS():
       display.text("lora read:" + str(lora_counter), 0, 30)
       display.text("lora rssi:" + str(lora_signal) + 'dB', 0, 40)
 
+      # CHECK HERE battery_level
       if battery_level != 0:
         display.text("batt:" + str(battery_level) + "%", 0, 50)
 
-      if voltage_sender != "0":
-        display.text("voltage:" + str(voltage_sender) + "V", 0, 50)
       display.show()
 
