@@ -1,13 +1,7 @@
 from time import sleep
 from machine import Pin, SPI
+from common_tmp import *
 
-''' this is for a Heltec LoRa module '''
-PIN_ID_LORA_RESET = 14
-PIN_ID_LORA_SS = 18
-PIN_ID_SCK = 5
-PIN_ID_MOSI = 27
-PIN_ID_MISO = 19
-PIN_ID_LORA_DIO0 = 26
 
 # loraconfig is the project definition for pins <-> hardware
 

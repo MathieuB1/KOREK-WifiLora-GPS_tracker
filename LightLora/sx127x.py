@@ -1,4 +1,7 @@
-'''This is a generic sx127x driver for the Semtech chipsets.
+'''
+https://github.com/MZachmann/LightLora_MicroPython/tree/master/LightLora
+
+This is a generic sx127x driver for the Semtech chipsets.
 In particular, it has a minor tweak for the sx1276.
 
 This code supports interrupt driven send and receive for maximum efficiency.
@@ -82,8 +85,8 @@ IRQ_RX_TIME_OUT_MASK = 0x80
 MAX_PKT_LENGTH = 255
 
 # pass in non-default parameters for any/all options in the constructor parameters argument
-DEFAULT_PARAMETERS = {'frequency': 868E6, 'tx_power_level': 2, 'signal_bandwidth': 125000,
-					  'spreading_factor': 7, 'coding_rate': 5, 'preamble_length': 8,
+DEFAULT_PARAMETERS = {'frequency': 868E6, 'tx_power_level': 14, 'signal_bandwidth': 125000,
+					  'spreading_factor': 9, 'coding_rate': 8, 'preamble_length': 8,
 					  'power_pin' : PA_OUTPUT_PA_BOOST_PIN,
 					  'implicitHeader': False, 'sync_word': 0x12, 'enable_CRC': False}
 
@@ -101,7 +104,7 @@ class SX127x:
 		self.name = name
 		self.parameters = parameters
 		self.bandwidth = 125000	# default bandwidth
-		self.spreading = 6	# default spreading factor
+		self.spreading = 9 # default spreading factor
 		self._onReceive = onReceive	 # the onreceive function
 		self._onTransmit = onTransmit   # the ontransmit function
 		self.doAcquire = hasattr(_thread, 'allocate_lock') # micropython vs loboris

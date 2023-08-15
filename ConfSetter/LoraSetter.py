@@ -1,11 +1,9 @@
-# Do it in lora instead of wifi
 from ConfSetter.commonSetter import setCommon
 from LightLora import loratool
 import machine, time
 
-password = '123456789'
 confirmation = 'init:ok'
-
+password = '123456789'
 def associate_to_sender_lora (title, aes_pass, frequency):
     print("Pending association...")
     data = "title=" + title + "&frequency=" + str(frequency) + "&aes=" + aes_pass

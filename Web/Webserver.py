@@ -1,6 +1,5 @@
 from ConfSetter.LoraSetter import associate_to_sender_lora
 from Display import oled
-from GPStracker.GPSsend import connect_wifi
 from common_tmp import *
 
 try:
@@ -13,7 +12,6 @@ import machine, network
 import json
 from time import sleep
 import urandom
-import time
 import esp
 esp.osdebug(None)
 
@@ -29,36 +27,10 @@ def random_string_size(size):
     random_string += urandom.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
   return random_string
 
-def associate_to_sender(ap_name, ap_password, title, aes_pass, frequency, wifi=True):
-
-  data = "title=" + title + "&frequency=" + frequency + "&aes=" + aes_pass
-
-  if wifi == True:
-    print("Enable Wifi")
-    station = network.WLAN(network.STA_IF)
-    station.active(True)
-    while True:
-      print("Scan ESSIDS")
-      time.sleep(1)
-      aps = station.scan()
-      for i in aps:
-        print(i)
-        if(i[0].startswith(ap_name)):
-          print("Connect to AP")
-          connect_wifi(i[0], ap_password)
-          addr_info = socket.getaddrinfo("192.168.4.1", 80)[0][-1]
-          s = socket.socket()
-          s.connect(addr_info)
-          print("Send Post")
-          s.send(bytes('POST / HTTP/1.0\r\nHost: %s\r\n\r\n%s' % (addr_info, data), 'utf8'))
-          s.close()
-          print("Post Sent!")
-          break
-
-
-def web_page(isSender):
+def web_page():
 
   WIFI = {}
+  WIFI2 = {}
   KOREK = {}
 
   try:
@@ -70,6 +42,8 @@ def web_page(isSender):
         val = line.split('=')[1]
         if key == 'WIFI':
           WIFI = json.loads(val)
+        if key == 'WIFI2':
+          WIFI2 = json.loads(val)
         if key == 'KOREK':
           KOREK = json.loads(val)
     f.close
@@ -77,35 +51,57 @@ def web_page(isSender):
     pass
 
 
-  html_receiver = """<p><span>Wifi Essid:</span>
-  <input pattern=".{3,}" title="3 characters minimum" value="%s" name="essid" required/>
-  <p/>
-  <p>
-  <span>Wifi Password:</span>
-  <input pattern=".{3,}" title="8 characters minimum" value="%s" name="wifi_pass" required/>
-  <p/>
-  <p/>
-  <p>
-  <span>Korek User:</span>
-  <input pattern=".{3,}" title="3 characters minimum" value="%s" name="korek_username" required/>
-  <p/>
-  <p>
-  <span>Korek Password:</span>
-  <input pattern=".{4,}" title="4 characters minimum" value="%s" name="korek_password" required/>
-  </p>
-  <p>
-  <span>Frequency:</span>
-   <select name="frequency" required>
-    <option value="60">1 minute sleep (4 hours battery)</option>
-    <option value="120">2 minutes sleep (6 hours battery)</option>
-    <option value="300">5 minutes sleep (12 hours battery)</option>
-    <option value="600">10 minutes sleep (2 days battery)</option>
-    <option value="1800">30 minutes sleep (5 days battery)</option>
-    <option value="3600">1 hour sleep (10 days battery)</option>
-    <option value="7200">2 hour sleep (18 days battery)</option>
-    <option value="21600">6 hour sleep (54 days battery)</option>
-  </select>
-  <p/>""" % (WIFI.get("essid", ""), WIFI.get("pass",""), KOREK.get("korek_username",""), KOREK.get("korek_password",""),)
+  html_receiver = """
+    <p>
+    <span>Wifi1 Essid:</span>
+    <input pattern=".{3,}" title="3 characters minimum" value="%s" name="essid" required/>
+    <p/>
+    <p>
+    <span>Wifi1 Password:</span>
+    <input pattern=".{3,}" title="8 characters minimum" value="%s" name="wifi_pass" required/>
+    <p/>
+    
+    <hr/>
+
+    <p>
+    <span>Wifi2 Essid (Optional Your Mobile AP):</span>
+    <input pattern=".{3,}" title="3 characters minimum" value="%s" name="essid2"/>
+    <p/>
+    <p>
+    <span>Wifi2 Password:</span>
+    <input pattern=".{3,}" title="8 characters minimum" value="%s" name="wifi_pass2"/>
+    <p/>
+  
+    <hr/>
+
+    <p>
+    <span>Korek Website (Optional):</span>
+    <input value="%s" name="korek_host"/>
+    <p/>
+    <p>
+    <span>Korek User (Optional):</span>
+    <input pattern=".{4,}" title="4 characters minimum" value="%s" name="korek_username"/>
+    <p/>
+    <p>
+    <span>Korek Password (Optional):</span>
+    <input pattern=".{4,}" title="4 characters minimum" value="%s" name="korek_password"/>
+    </p>
+  
+    <hr/>
+
+    <p>
+    <span>Frequency:</span>
+     <select name="frequency" required>
+      <option value="60">1 minute sleep (4 hours battery)</option>
+      <option value="120">2 minutes sleep (6 hours battery)</option>
+      <option value="300">5 minutes sleep (12 hours battery)</option>
+      <option value="600">10 minutes sleep (2 days battery)</option>
+      <option value="1800">30 minutes sleep (5 days battery)</option>
+      <option value="3600">1 hour sleep (10 days battery)</option>
+      <option value="7200">2 hour sleep (18 days battery)</option>
+      <option value="21600">6 hour sleep (54 days battery)</option>
+    </select>
+    <p/>""" % (WIFI.get("essid", ""), WIFI.get("pass",""), WIFI2.get("essid", ""), WIFI2.get("pass",""), KOREK.get("korek_host",""), KOREK.get("korek_username",""), KOREK.get("korek_password",""),)
 
 
   html = """<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
@@ -115,27 +111,9 @@ def web_page(isSender):
   <span>Cat Name:</span>
   <input pattern=".{4,}" title="4 characters minimum" value="%s" name="title" required/>
   <p/>
-  <p/>""" % (KOREK.get("title",""),)
+  <hr/>""" % (KOREK.get("title",""),)
 
-  html_sender = """<p>
-  <span>AES Key:</span>
-  <input pattern=".{6,}" title="6 characters minimum" value="" name="aes" required/>
-  </p>
-  <p>
-  <span>Frequency:</span>
-   <select name="frequency" required>
-    <option value="60">1 minute sleep (4 hours battery)</option>
-    <option value="120">2 minutes sleep (6 hours battery)</option>
-    <option value="300">5 minutes sleep (12 hours battery)</option>
-    <option value="600">10 minutes sleep (2 days battery)</option>
-    <option value="1800">30 minutes sleep (5 days battery)</option>
-    <option value="3600">1 hour sleep (10 days battery)</option>
-    <option value="7200">2 hour sleep (18 days battery)</option>
-    <option value="21600">6 hour sleep (54 days battery)</option>
-  </select> 
-  <p/>"""
-
-  html += html_receiver if not isSender else html_sender
+  html += html_receiver
   
   html += """<input type="submit" value="Send" />
   </form>
@@ -148,7 +126,7 @@ def confirm():
             <body><h1>Korek Tracking Configured!</h1></body></html>"""
   return html
 
-def startWebServer(isSender, oled_display):
+def startWebServer(oled_display):
 
   ap = network.WLAN(network.AP_IF)
   ap.active(True)
@@ -177,7 +155,7 @@ def startWebServer(isSender, oled_display):
 
     print('Got a connection from %s' % str(addr))
     request = conn.recv(1024)
-    str_req =  str(request)[1:-1]
+    str_req = str(request)[1:-1]
     print('Content = %s' % str(request))
     res = str_req.split('\\n')[-1]
 
@@ -185,11 +163,10 @@ def startWebServer(isSender, oled_display):
       dict_res = dict(i.split('=') for i in res.split('&'))
 
       # Generate aes and send it to the sender
-      if not isSender:
-        aes_pass = str(random_string_size(6))
-        dict_res.update({"aes": aes_pass})
+      aes_pass = str(random_string_size(16))
+      dict_res.update({"aes": aes_pass})
 
-      print(setCommon(isSender, dict_res))
+      print(setCommon(dict_res))
 
       response = confirm()
       conn.send(response)
@@ -197,21 +174,18 @@ def startWebServer(isSender, oled_display):
 
       if oled_display:
         oled.resetScreen(display)
-        display.text("starting sender..." if isSender else "start receiver..." , 0, 0)
+        display.text("start receiver...", 0, 0)
         display.show()
 
       # Send conf to sender
-      if not isSender:
-        if oled_display:
-          display.text("pairing...", 0, 10)
-          display.show()
-        # Only for ESP chips
-        #associate_to_sender(ssid, password, dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
-        associate_to_sender_lora(dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
-        if oled_display:
-          oled.resetScreen(display)
-          display.text("pairing ok", 0, 10)
-          display.show()
+      if oled_display:
+        display.text("pairing...", 0, 10)
+        display.show()
+      associate_to_sender_lora(dict_res.get("title"), dict_res.get("aes"), dict_res.get("frequency"))
+      if oled_display:
+        oled.resetScreen(display)
+        display.text("pairing ok", 0, 10)
+        display.show()
 
       sleep(1)
       machine.reset()
@@ -220,6 +194,6 @@ def startWebServer(isSender, oled_display):
     except Exception as e: 
       print(e)
 
-    response = web_page(isSender)
+    response = web_page()
     conn.send(response)
     conn.close()

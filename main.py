@@ -1,7 +1,11 @@
-import sendGPS, receiveGPS
-from ConfSetter.LoraSetter import associateLora
-from Web.Webserver import startWebServer
 import os, machine
+import receiveGPS
+from Web.Webserver import startWebServer
+from Web.Trackerserver import run_web_server
+
+import _thread
+
+
 
 def reset_conf_file ():
     # PRG button pressed
@@ -14,15 +18,15 @@ def reset_conf_file ():
         file.close()
         machine.reset()
 
+
 def main():
-    # Board is the Receiver by Default
-    receiver = True
 
     print("start korek tracking...")
-    default_conf = 0
+    oled_display = False
 
     reset_conf_file()
 
+    default_conf = 0
     try:
         file = open("common.py", "r")
         default_conf = len(file.read()[:128])
@@ -30,28 +34,21 @@ def main():
     except:
         pass
 
-    if receiver:
-        print("starting in receiver mode!")
-        print("conf loaded!") if default_conf > 0 else startWebServer(isSender=False, oled_display=True)
-        receiveGPS.receiveGPS()
+    if default_conf > 0:
+        print("conf loaded!")
     else:
-        oled_display = False
-        ## Choose lora or wifi for the association
-        association_mode = "lora"
+        startWebServer(oled_display)
 
-        print("starting in sender mode!")
-        if default_conf > 0:
-            print("conf loaded!")
-        else:
-            if association_mode == "wifi":
-                # Prepare webserver to receive a POST for association
-                # Only available on ESP chips
-                startWebServer(isSender=True, oled_display=oled_display)
-            else:
-                # Prepare Lora to receive a message for association
-                associateLora()
+    # Start the web server thread
+    _thread.start_new_thread(run_web_server, ())
 
-        sendGPS.startGPS(oled_display=oled_display)
+    # Start the receiver thread
+    _thread.start_new_thread(receiveGPS.receiveGPS(oled_display), ())
+
+    # Keep the main thread running
+    while True:
+        pass
+
 
 if __name__ == '__main__':
   main()

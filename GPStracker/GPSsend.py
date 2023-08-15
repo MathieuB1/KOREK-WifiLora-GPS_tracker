@@ -1,31 +1,6 @@
-import network
 import urequests
-import time
 
-def connect_wifi(essid, password):
-  wifi_timeout = 10
-  try:
-    station = network.WLAN(network.STA_IF)
-    if station.isconnected():
-      return 'wifi already connected!'
-    station.active(True)
-    station.connect(essid, password)
-    counter = 0
-    while station.isconnected() == False:
-      time.sleep(1)
-      counter += 1
-      if counter > wifi_timeout:
-        return False
-    return 'wifi successfuly connected!'
-  except:
-    print('Cannot connect to wifi!')
-    return False
 
-def disconnect():
-    station = network.WLAN(network.STA_IF)
-    station.disconnect()
-    station.active(False)
-    return 'wifi disconnected!'
 
 def existing_product(create_title, korek):
   try:
@@ -50,6 +25,7 @@ def create_product(creation_date, korek):
   try:
     url = korek["korek_host"] + "/products/?zip=true"
     create_title = korek["title"] + "-" + str(creation_date)
+    res = (None,None,)
 
     # Check if products exists
     product_id = existing_product(create_title, korek)
@@ -68,10 +44,10 @@ def create_product(creation_date, korek):
       return res
     else:
       print("please create the korek user before sending data!")
-      return False
+      return res
   except:
     print('cannot create product!')
-    return False
+    return res
 
 
 def refresh_token(korek):

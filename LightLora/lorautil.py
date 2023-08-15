@@ -31,7 +31,7 @@ class LoraUtil:
 		# init spi
 		self.spic = spicontrol.SpiControl()
 		# init lora
-		params = {'tx_power_level': 5,
+		params = {'tx_power_level': 14,
 			'frequency' : 868e6,
 			'signal_bandwidth': 125000,
 			'spreading_factor': 9,
