@@ -22,7 +22,7 @@ def reset_conf_file ():
 def main():
 
     print("start korek tracking...")
-    oled_display = False
+    oled_display = True
 
     reset_conf_file()
 
