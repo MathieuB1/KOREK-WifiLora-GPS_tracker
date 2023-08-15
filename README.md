@@ -40,9 +40,16 @@ cd KOREK-WifiLora-GPS_tracker/ && rm -rf .git && cp -r * /pyboard/
 # 3. Reboot your board and connect to LOCAT-AP with ip address shown on your display board to add your korek-react.ml credentials & Wifi account
 ```
 #### Web Server
+
+# Initialization
 essid: LOCAT-AP
 pass: 123456789
 webserver: http://192.168.4.1/
+
+# Webtracker
+http://192.168.1.28/sensor
+
+
 #### Debug
 ```
 sudo rshell -p /dev/ttyUSB0
